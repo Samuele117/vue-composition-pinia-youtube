@@ -1,6 +1,10 @@
 <script setup>
+import { ref,reactive } from "vue";
 
-const tasks= [
+const appName = ref("my new task manager");
+let newTask = {completed: false};
+
+const tasks= reactive([
     {
       name: "Website design",
       description: "Define the style guide, branding and create the webdesign on Figma.",
@@ -36,8 +40,17 @@ const tasks= [
       description: "Open a bank account for my freelance business.",
       completed: false
     }
-];
+]);
 
+function addTask(){
+  if (newTask.name && newTask.description) {
+      tasks.push(newTask)
+      newTask = {completed: false};
+  } else {
+    alert("field empty");
+  }
+
+}
 </script>
 
 <template>
@@ -46,9 +59,10 @@ const tasks= [
     <div class="header">
       <div class="header-side">
         <h1>
-          Tasks Manager
+          {{ appName }}
         </h1>
       </div>
+      <input type="text" v-model="appName">
     </div>
     
     <div class="filters">
@@ -68,34 +82,19 @@ const tasks= [
       </div>
     </div>
 
-    <div class="tasks">
+    <div v-for="(task, index) in tasks" :key="index" class="tasks">
       
       <div class="task">
         <h3>
-          Website design
+          {{ task.name }}
         </h3>
         <p>
-          Define the style guide, branding and create the webdesign on Figma.
+          {{task.description}}
         </p>
         <div class="task-check">
-          <input type="checkbox" checked />
+          <input type="checkbox" :checked="task.completed" />
           <label>
             Done
-          </label>
-        </div>
-      </div>
-
-      <div class="task">
-        <h3>
-          Website development
-        </h3>
-        <p>
-          Develop the portfolio website using Vue JS.
-        </p>
-        <div class="task-check">
-          <input type="checkbox"/>
-          <label>
-            To-Do
           </label>
         </div>
       </div>
@@ -104,9 +103,9 @@ const tasks= [
 
     <div class="add-task">
       <h3>Add a new task</h3>
-      <input type="text" name="title" placeholder="Enter a title..."><br />
-      <textarea name="description" rows="4" placeholder="Enter a description..." /><br />
-      <button class="btn gray">Add Task</button>
+      <input v-model = "newTask.name" type="text" name="title" placeholder="Enter a title..."><br />
+      <textarea v-model = "newTask.description" name="description" rows="4" placeholder="Enter a description..." /><br />
+      <button @click ="addTask" class="btn gray">Add Task</button>
 
     </div>
 
